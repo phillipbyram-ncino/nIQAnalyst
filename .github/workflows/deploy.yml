@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  install:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,26 +28,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '18.x'
-      - name: Install
-        run: npm install
-  test:
-    needs: 
-      install
-    runs-on: ubuntu-latest
-    steps:
-      - name: test
-        run: npm run test
-  build:
-    needs: 
-      install
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '9.x'
       - name: Install
         run: npm install
       - name: Build
