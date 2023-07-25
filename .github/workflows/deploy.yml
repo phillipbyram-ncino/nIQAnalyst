@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: '8.x'
+          node-version: '9.x'
       - name: Install
         run: npm install
       - name: Build
