@@ -19,7 +19,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  install:
+    runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+        - name: Setup Node
+          uses: actions/setup-node@v1
+          with:
+            node-version: '18.x'
+        - name: Install
+          run: npm install
+  test:
+    needs: 
+      install
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: npm run test
   build:
+    needs: 
+      install
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,7 +67,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          # Upload entire repository
           path: 'dist/niqanalyst'
       - name: Deploy to GitHub Pages
         id: deployment
