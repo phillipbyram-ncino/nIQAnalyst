@@ -3,8 +3,23 @@
 <head>
   <meta charset="utf-8">
   <title>NIQAnalyst</title>
+  <base href="{{site.baseURL}}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>    
+    // Step 1: Retrieve the path from the URL
+    const currentPath = window.location.pathname;
+
+    // Step 2: Store the path in a localStorage key
+    localStorage.setItem('currentPath', currentPath);
+
+    // Step 3: Replace the {{site.baseURL}} placeholder with the value from localStorage
+    const baseURLPlaceholder = "{{site.baseURL}}";
+    const storedPath = localStorage.getItem('currentPath');
+    if (baseURLPlaceholder && storedPath) {
+      const updatedBaseURL = baseURLPlaceholder.replace("{{site.baseURL}}", storedPath);
+      document.querySelector('base').setAttribute('href', updatedBaseURL);
+    }</script>
 </head>
 <body>
   <app-root></app-root>
