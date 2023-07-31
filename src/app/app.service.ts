@@ -60,11 +60,11 @@ export class AppService {
 
         3. Debt Service Coverage Ratio (DSCR): To meet the benchmark, your DSCR should be equal to 1.25 or higher. If your DSCR equals 1.25 or above, it meets the benchmark.
 
-        4. Loan-to-Value Ratio (LTV): To meet the benchmark, your LTV should be equal to or less than 75%. If your LTV is equal to or less than 75%, it meets the benchmark.
+        4. Loan-to-Value Ratio (LTV): To meet the benchmark, your LTV should be equal to or less than 0.75. If your LTV is equal to or less than 0.75, it meets the benchmark.
 
         5. Current Ratio: To meet the benchmark, your current ratio should be equal to or greater than 1.2. If your current ratio is equal to or greater than 1.2, it meets the benchmark.
 
-        6. Profit Margin: To meet the benchmark, your profitability ratio should be equal to or greater than 1.5%. If your profitability ratio is equal to or greater than 1.5%, it meets the benchmark.
+        6. Profit Margin: To meet the benchmark, your profitability ratio should be equal to or greater than 0.015. If your profitability ratio is equal to or greater than 0.015, it meets the benchmark.
 
         7. Fixed Charge Coverage Ratio: To meet the benchmark, your fixed charge coverage ratio should be equal to or greater than 1.25. If your fixed charge coverage ratio is equal to or greater than 1.25, it meets the benchmark.
 
