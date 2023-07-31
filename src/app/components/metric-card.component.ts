@@ -2,7 +2,8 @@ import { Component, Input } from "@angular/core";
 
 @Component({
     templateUrl: './metric-card.component.html',
-    selector: 'app-metric-card'
+    selector: 'app-metric-card',
+    styleUrls:['./metric-card.component.css']
 })
 export class MetricCardComponent {
 

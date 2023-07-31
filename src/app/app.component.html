@@ -1,14 +1,21 @@
-<ng-container>
-  <app-metric-card
-    #metric
-    [metricValue]="7"
-    metricName="Debt Coverage Service Ratio"
-  ></app-metric-card>
-  <app-metric-card
-    #metric
-   [metricValue]="11"
-    metricName="Inventory Turnover"
-  ></app-metric-card>
-</ng-container>
-<button (click)="makeCall()">Click to Make Call</button>
-<div>{{ latestResponse }}</div>
+<mat-grid-list cols="3" rowHeight="3:1">
+  <mat-grid-tile colspan="1">
+    <button mat-stroked-button (click)="makeCall()">Click to Make Call</button>
+
+    <div>{{ latestResponse }}</div>
+  </mat-grid-tile>
+  <mat-grid-tile colspan="2">
+    <div class="metric-cards">
+      <app-metric-card
+        #metric
+        [metricValue]="7"
+        metricName="Debt Coverage Service Ratio"
+      ></app-metric-card>
+      <app-metric-card
+        #metric
+        [metricValue]="11"
+        metricName="Inventory Turnover"
+      ></app-metric-card>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Configuration, CreateCompletionRequest, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage, Configuration, CreateChatCompletionRequest, CreateCompletionRequest, OpenAIApi } from "openai";
 
 
 export interface CallOptions {
@@ -9,6 +9,8 @@ export interface CallOptions {
 @Injectable({ providedIn: "root" })
 export class AppService {
 
+    static APPROVED: string = 'approved';
+    static DENIED: string = 'denied';
 
     openai: OpenAIApi | undefined;
     doSetup(key: string): OpenAIApi {
@@ -29,27 +31,38 @@ export class AppService {
         }
 
         try {
-            const completion = await this.openai.createCompletion(this.buildCCR(options.metrics));
-            return completion.data.choices[0]?.text || 'There was an error with the response';
+            const completion = await this.openai.createChatCompletion(this.buildCCR(options.metrics));
+            const fullContent = completion.data.choices[0]?.message?.content || 'There was an error with the response';
+
+            return fullContent.endsWith(AppService.APPROVED)? AppService.APPROVED: fullContent.endsWith(AppService.DENIED)? AppService.DENIED: 'ERROR';
 
         } catch (error) { }
         return 'hi';
     }
 
-    buildCCR(metrics: Map<string, number>): CreateCompletionRequest {
+    buildCCR(metrics: Map<string, number>): CreateChatCompletionRequest {
 
         let template = `
-        Repeat the following numbers back to me along with their names:
+        add all the following numbers ignoring their names. 
+        Reply with only one word depending on the following condition where TOTAL is the total of the numbers:
+        If TOTAL > 20 then '${AppService.APPROVED}'
+        If TOTAL <= 20 then '${AppService.DENIED}'
+        here are the numbers and their names:
         `;
 
         Array.from(metrics.entries()).forEach(([name, value]) => {
             template += `name:${name} | value: ${value}
             `;
         });
+        const message: ChatCompletionRequestMessage = {
+            role: 'user',
+            content: template
+        }
+        const messages:Array<ChatCompletionRequestMessage> = [message];
         return {
-            model: "text-davinci-003",
-            prompt: template,
-            temperature: 0.6,
+            model: "gpt-3.5-turbo",
+            temperature: 0.0,
+            messages:messages
         }
     }
 
