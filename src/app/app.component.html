@@ -1,20 +1,49 @@
-<mat-grid-list cols="3" rowHeight="3:1">
-  <mat-grid-tile colspan="1">
-    <button mat-stroked-button (click)="makeCall()">Click to Make Call</button>
+<mat-grid-list cols="3">
+  <mat-grid-tile colspan="1" >
+    <div class="status-action-panel">
+      <button mat-stroked-button (click)="makeCall()">
+        Click to Make Call
+      </button>
 
-    <div>{{ latestResponse }}</div>
+      <span>{{ latestResponse }}</span>
+    </div>
   </mat-grid-tile>
-  <mat-grid-tile colspan="2">
+  <mat-grid-tile colspan="1">
     <div class="metric-cards">
       <app-metric-card
         #metric
-        [metricValue]="7"
-        metricName="Debt Coverage Service Ratio"
+        [metricValuePlaceholder]="2.5"
+        metricName="Debt Ratio"
       ></app-metric-card>
       <app-metric-card
         #metric
-        [metricValue]="11"
-        metricName="Inventory Turnover"
+        [metricValuePlaceholder]="7.5"
+        metricName="Inventory Ratio"
+      ></app-metric-card>
+      <app-metric-card
+        #metric
+        [metricValuePlaceholder]="1.25"
+        metricName="Debt Service Coverage Ratio (DSCR)"
+      ></app-metric-card>
+      <app-metric-card
+        #metric
+        [metricValuePlaceholder]="70"
+        metricName="Loan-to-Value Ratio (LTV)"
+      ></app-metric-card>
+      <app-metric-card
+        #metric
+        [metricValuePlaceholder]="1.3"
+        metricName="Current Ratio"
+      ></app-metric-card>
+      <app-metric-card
+        #metric
+        [metricValuePlaceholder]="2.5"
+        metricName="Profit Margin"
+      ></app-metric-card>
+      <app-metric-card
+        #metric
+        [metricValuePlaceholder]="1.25"
+        metricName="Fixed Charge Coverage Ratio (FCCR)"
       ></app-metric-card>
     </div>
   </mat-grid-tile>

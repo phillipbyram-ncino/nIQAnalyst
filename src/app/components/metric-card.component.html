@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-header>{{ metricName }}</mat-card-header>
     <mat-card-content>
-      {{ metricValue }}
+      <input matInput [value]="metricValuePlaceholder" />
     </mat-card-content>
   </mat-card>
 </div>

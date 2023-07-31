@@ -30,21 +30,24 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.viewReady = true;
-    this.metricsComponents?.forEach((metric)=>{
-      this.metrics.set(metric.metricName, metric.metricValue);
 
-    })
+    this.updateMetricsMap();
   }
 
   async makeCall(): Promise<void> {
 
+    this.updateMetricsMap();
     const options: CallOptions = {
       api_key: this.api_key,
       metrics: this.metrics
     }
     this.latestResponse = await this.service.makeCall(options);
 
-
   }
 
+  private updateMetricsMap(): void {
+    this.metricsComponents?.forEach((metric) => {
+      this.metrics.set(metric.metricName, (metric.value?.value || 0) as number);
+    })
+  }
 }
