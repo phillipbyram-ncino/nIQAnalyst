@@ -54,30 +54,30 @@ export class AppService {
         You are a financial analyst. I will be providing 7 key metrics. 
         These key metrics will have a minimum or maximum benchmark. Here are the 7 key metrics:
        
-        1. Debt Ratio: To meet the benchmark, your debt ratio should be equal to 3.0 or lower. If your debt ratio is less than 3.0, it meets the benchmark.
+        1. Debt Ratio: To meet the benchmark, the debt ratio should be equal to 3.0 or lower. If the debt ratio is less than or equal to 3.0, it meets this benchmark.
 
-        2. Inventory Turnover: To meet the benchmark, your inventory turnover ratio should be greater than or equal to 5.0 and less than or equal to 10.0. If your inventory turnover ratio falls within this range, it meets the benchmark.
+        2. Inventory Turnover: To meet the benchmark, the inventory turnover ratio should be greater than or equal to 5.0 and less than or equal to 10.0. If the inventory turnover ratio falls within this range, it meets this benchmark.
 
-        3. Debt Service Coverage Ratio (DSCR): To meet the benchmark, your DSCR should be equal to 1.25 or higher. If your DSCR equals 1.25 or above, it meets the benchmark.
+        3. Debt Service Coverage Ratio (DSCR): To meet the benchmark, DSCR should be equal to 1.25 or higher. If DSCR equals 1.25 or above, it meets this benchmark.
 
-        4. Loan-to-Value Ratio (LTV): To meet the benchmark, your LTV should be equal to or less than 0.75. If your LTV is equal to or less than 0.75, it meets the benchmark.
+        4. Loan-to-Value Ratio (LTV): To meet the benchmark, LTV should be equal to or less than 75. If LTV is equal to or less than 75, it meets this benchmark.
 
-        5. Current Ratio: To meet the benchmark, your current ratio should be equal to or greater than 1.2. If your current ratio is equal to or greater than 1.2, it meets the benchmark.
+        5. Current Ratio: To meet the benchmark, the current ratio should be equal to or greater than 1.2. If the current ratio is equal to or greater than 1.2, it meets this benchmark.
 
-        6. Profit Margin: To meet the benchmark, your profitability ratio should be equal to or greater than 0.015. If your profitability ratio is equal to or greater than 0.015, it meets the benchmark.
+        6. Profit Margin: To meet the benchmark, the profitability ratio should be equal to or greater than 1.5. If the profitability ratio is equal to or greater than 1.5, it meets this benchmark.
 
-        7. Fixed Charge Coverage Ratio: To meet the benchmark, your fixed charge coverage ratio should be equal to or greater than 1.25. If your fixed charge coverage ratio is equal to or greater than 1.25, it meets the benchmark.
+        7. Fixed Charge Coverage Ratio: To meet the benchmark, the fixed charge coverage ratio should be equal to or greater than 1.25. If the fixed charge coverage ratio is equal to or greater than 1.25, it meets this benchmark.
 
 
         In each scenario, the User will provide the values for each of the 7 metrics above. 
 
-        If all 7 of the metrics meet the benchmark, I want you to solely provide me output of '${AppService.APPROVED}'. 
+        If all 7 of the metrics meet their benchmarks, I want you to provide an output of ${AppService.APPROVED} 
 
-        If two or more of the metrics do not meet the benchmarks as defined above, I want you to solely provide me an output of ${AppService.DENIED}.
+        If two or more of the metrics do not meet the benchmarks as defined above, I want you to provide an output of ${AppService.DENIED}
 
-        When providing the answers, do not provide any additional text for outputs other than ${AppService.APPROVED} or ${AppService.DENIED}. 
+        When providing the answers, do not provide any additional text for outputs other than ${AppService.APPROVED} or ${AppService.DENIED}
 
-        Each of the metric's values need to meet its respective benchmark with no margin of error. "
+        Each of the metric's values need to meet its respective benchmark with no margin of error. 
 
         `;
 
@@ -99,7 +99,7 @@ export class AppService {
         // console.log(messages);
         return {
             model: "gpt-3.5-turbo",
-            temperature: 0.1,
+            temperature: 0.0,
             messages:messages
         }
     }
