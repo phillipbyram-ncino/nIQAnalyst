@@ -1,3 +1,14 @@
-{{api_key}}
+<ng-container>
+  <app-metric-card
+    #metric
+    [metricValue]="7"
+    metricName="Debt Coverage Service Ratio"
+  ></app-metric-card>
+  <app-metric-card
+    #metric
+   [metricValue]="11"
+    metricName="Inventory Turnover"
+  ></app-metric-card>
+</ng-container>
 <button (click)="makeCall()">Click to Make Call</button>
-<div>{{latestResponse}}</div>
+<div>{{ latestResponse }}</div>
