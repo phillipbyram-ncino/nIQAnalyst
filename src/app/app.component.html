@@ -1,5 +1,5 @@
-<mat-grid-list cols="3">
-  <mat-grid-tile colspan="1" >
+<!-- <mat-grid-list cols="3" rows="2">
+  <mat-grid-tile colspan="1">
     <div class="status-action-panel">
       <button mat-stroked-button (click)="makeCall()">
         Click to Make Call
@@ -47,4 +47,9 @@
       ></app-metric-card>
     </div>
   </mat-grid-tile>
-</mat-grid-list>
+  <mat-grid-tile colspan="3">
+    <app-analysis-box></app-analysis-box>
+  </mat-grid-tile>
+</mat-grid-list> -->
+
+<app-analysis-dashboard><div *ngFor="let response of responses"><span>{{response}}</span></div></app-analysis-dashboard>

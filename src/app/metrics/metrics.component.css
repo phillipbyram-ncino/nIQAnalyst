@@ -3,7 +3,3 @@
     flex-direction:row;
     flex-wrap: wrap;
 }
-.status-action-panel {
-    display: flex;
-    flex-direction: column;
-}

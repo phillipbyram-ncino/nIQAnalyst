@@ -1,3 +1,17 @@
 .card-container {
-  padding: 0.5rem;
+  padding: 0.2rem;
+  margin: 0.1rem;
+}
+
+.card-content {
+  display: flex;
+  float:left
+}
+
+mat-card-header {
+  font-size: small;
+  padding: 0.25rem;
+}
+mat-card-content {
+  padding: 0.25rem;
 }

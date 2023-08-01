@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ChatCompletionRequestMessage, Configuration, CreateChatCompletionRequest, CreateCompletionRequest, OpenAIApi } from "openai";
+import { BehaviorSubject, of } from "rxjs";
 
 
 export interface CallOptions {
@@ -14,6 +15,8 @@ export class AppService {
 
     static END_OF_CONTENT_WIGGLE_ROOM_LENGTH = 7;
 
+    latestResponse$: BehaviorSubject<string> = new BehaviorSubject<string>('No response yet');
+
     openai: OpenAIApi | undefined;
     doSetup(key: string): OpenAIApi {
         if (this.openai) {
@@ -26,7 +29,7 @@ export class AppService {
         return this.openai;
     }
 
-    async makeCall(options: CallOptions): Promise<string> {
+    async makeCall(options: CallOptions): Promise<void> {
         options.api_key && this.doSetup(options.api_key);
         if (!this.openai) {
             throw Error('api not initialized');
@@ -41,10 +44,11 @@ export class AppService {
             const startPos = fullContent.length - AppService.END_OF_CONTENT_WIGGLE_ROOM_LENGTH - statusLength;
             const lastCharacters = fullContent.substring(startPos);
 
-            return lastCharacters.includes(AppService.APPROVED)? AppService.APPROVED: lastCharacters.includes(AppService.DENIED)? AppService.DENIED: 'ERROR';
+            this.latestResponse$.next(lastCharacters.includes(AppService.APPROVED)? AppService.APPROVED: lastCharacters.includes(AppService.DENIED)? AppService.DENIED: 'ERROR');
+            return;
 
         } catch (error) { }
-        return 'hi';
+        this.latestResponse$.next('hi');
     }
 
     buildCCR(metrics: Map<string, number>): CreateChatCompletionRequest {
