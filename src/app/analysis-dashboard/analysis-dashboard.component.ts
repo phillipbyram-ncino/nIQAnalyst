@@ -7,7 +7,7 @@ import { MetricCardComponent } from '../components/metric-card.component';
 import { PeriodCard } from '../cards-service/period-card';
 import { AppService } from '../app.service';
 import { MetricsComponent } from '../metrics/metrics.component';
-import { ApprovalOptions } from '../cards-service/metrics-formula.service';
+import { ApprovalOptions, MetricsFormulaService } from '../cards-service/metrics-formula.service';
 
 @Component({
   selector: 'app-analysis-dashboard',
@@ -17,7 +17,7 @@ import { ApprovalOptions } from '../cards-service/metrics-formula.service';
 })
 export class AnalysisDashboardComponent {
 
-  constructor(private cardsService: CardsService, private appService: AppService) {
+  constructor(private cardsService: CardsService, private appService: AppService, private metricsService: MetricsFormulaService) {
   }
   private breakpointObserver = inject(BreakpointObserver);
   private addPeriodEvent = new EventEmitter<Array<Card>>()
@@ -28,15 +28,17 @@ export class AnalysisDashboardComponent {
   iconColor: string = 'primary';
   isSuccessful: boolean = false;
   approvalOptions: ApprovalOptions = {
-    allowableFailedMetrics: 1
+    allowableFailedMetrics: 2,
+    allowableFailedPeriodsRatio: 0.5
   }
 
-  handleEval(success: boolean) {
+  handleEval(success: boolean):boolean {
     this.iconName = success ? 'checkmark' : 'error';
     this.iconColor = success ? 'primary' : 'accent';
 
     this.isSuccessful = success;
     this.showIcon = true;
+    return success;
   }
 
   @ViewChildren('metrics')
@@ -73,7 +75,9 @@ export class AnalysisDashboardComponent {
     this.submitCall.next();
   }
 
-  async findAtRisk(): Promise<void> {
-    await Promise.all([this.metricsComponents?.map(component => component.findAtRisk())])
+  findAtRisk(): void {
+    const failedPeriods = this.metricsComponents?.map(component => component.findAtRisk()) || [];
+
+    this.handleEval(this.metricsService.isApplicationFailure(undefined,this.approvalOptions,failedPeriods.filter(f => !!f).length, this.cardsService.getPeriodCardsLength()));
   }
 }

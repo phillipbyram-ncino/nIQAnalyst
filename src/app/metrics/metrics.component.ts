@@ -38,12 +38,13 @@ export class MetricsComponent {
   }
 
 
-  private handleEval(success: boolean) {
+  private handleEval(success: boolean):boolean {
     this.iconName = success ? 'checkmark' : 'error';
     this.iconColor = success ? 'primary' : 'accent';
 
     this.isSuccessful = success;
     this.showIcon = true;
+    return success;
   }
 
 
@@ -53,7 +54,7 @@ export class MetricsComponent {
     })
   }
 
-   async findAtRisk(): Promise<void> {
+  findAtRisk(): boolean {
 
     this.updateMetricsMap();
 
@@ -62,7 +63,7 @@ export class MetricsComponent {
     const numfailures = successes.filter(success => !success).length
 
 
-    this.handleEval(!this.metricsService.isPeriodFailure(undefined,this.approvalOptions,numfailures));
+    return this.handleEval(!this.metricsService.isPeriodFailure(undefined,this.approvalOptions,numfailures));
    }
 
 }

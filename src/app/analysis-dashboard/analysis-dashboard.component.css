@@ -17,6 +17,12 @@
   top: 5px;
   right: 10px;
 }
+.card-title {
+  display: flex;
+  text-align: center;
+  flex-grow: 1;
+  overflow: auto;
+}
 
 .dashboard-card-content {
   text-align: center;
@@ -30,4 +36,8 @@
 
 .decision-buttons button {
   margin: 0.1rem;
+}
+.status-icon {
+  position: absolute;
+  right: 1rem;
 }

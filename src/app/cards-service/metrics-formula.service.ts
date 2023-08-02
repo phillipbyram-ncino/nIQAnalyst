@@ -20,8 +20,6 @@ export class MetricsFormulaService {
 
     isMetricSuccessful(metric: Metric): boolean {
 
-        console.log(metric)
-console.log(metric.min <= metric.value && metric.value <= metric.max)
         return metric.min <= metric.value && metric.value <= metric.max
     }
     isMetricLowRisk(metric: Metric): boolean {
@@ -49,9 +47,11 @@ console.log(metric.min <= metric.value && metric.value <= metric.max)
     }
 
 
-    isApplicationFailure(periodList: Array<Array<Metric>>, approvalOptions?: ApprovalOptions): boolean {
-
-        const options: ApprovalOptions = this.extrapolateOptions(periodList.length, approvalOptions);
+    isApplicationFailure(periodList?: Array<Array<Metric>>, approvalOptions?: ApprovalOptions, numFailures?: number, numPeriods?: number): boolean {
+        const options: ApprovalOptions = this.extrapolateOptions(periodList?.length || numPeriods || 0, approvalOptions);
+        if(!periodList){
+            return (numFailures || 0) > (options.allowableFailedPeriods || -1)
+        }
 
         const failedPeriods = periodList.filter((m) => this.isPeriodFailure(m, options));
 
