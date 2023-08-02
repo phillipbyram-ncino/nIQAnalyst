@@ -49,16 +49,17 @@ export class MetricCardComponent implements AfterViewInit, Metric {
             this.value = this.metricValuePlaceholder
         }
 
-        const successful = this.metricsService.isMetricSuccessful(this)
-        !successful && this.setIcon(!successful);
+        const successful = this.metricsService.isMetricSuccessful(this);
+        const isHighRisk = !this.metricsService.isMetricLowRisk(this);
+        this.setIcon([successful,isHighRisk])
     
-        this.setIcon(successful, this.metricsService.isMetricLowRisk(this));
         return successful;
     }
-    setIcon(success:boolean, atRisk?:boolean){
+    setIcon([success, atRisk]:[boolean,boolean]){
+        console.log([success,atRisk]);
 
-        this.iconName = atRisk? 'warning': success? 'checkmark':'error';
-        this.iconColor = atRisk? 'accent': success? 'primary':'accent';
+        this.iconName = atRisk? 'error':'checkmark';
+        this.iconColor = success? 'primary': 'accent';
 
         this.showIcon = true;
     }

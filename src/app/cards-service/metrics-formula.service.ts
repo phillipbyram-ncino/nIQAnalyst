@@ -20,18 +20,21 @@ export class MetricsFormulaService {
 
     isMetricSuccessful(metric: Metric): boolean {
 
+        console.log(metric)
+console.log(metric.min <= metric.value && metric.value <= metric.max)
         return metric.min <= metric.value && metric.value <= metric.max
     }
     isMetricLowRisk(metric: Metric): boolean {
+        // console.log(metric)
         switch (metric.metricBounds) {
             case "upper":
-                return metric.value < (metric.max - metric.boundsMargin);
+                return metric.value <= (metric.max - metric.boundsMargin);
             case "lower":
-                return metric.value > (metric.min + metric.boundsMargin);
+                return metric.value >= (metric.min + metric.boundsMargin);
             case "both":
-                return (metric.value < (metric.max - metric.boundsMargin)) && (metric.value > (metric.min + metric.boundsMargin));
+                return (metric.value <= (metric.max - metric.boundsMargin)) && (metric.value >= (metric.min + metric.boundsMargin));
             case "neither":
-                return false;
+                return this.isMetricSuccessful(metric);
         }
 
     }
