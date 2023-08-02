@@ -55,4 +55,8 @@ export class AnalysisDashboardComponent {
     await Promise.all([this.metricsComponents?.map(component => component.makeCall())]);
     this.submitCall.next();
   }
+
+  async findAtRisk(): Promise<void>{
+    await Promise.all( [this.metricsComponents?.map(component => component.findAtRisk())])
+  }
 }

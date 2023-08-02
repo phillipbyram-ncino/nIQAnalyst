@@ -1,8 +1,19 @@
 <div class="card-container">
   <mat-card>
-    <mat-card-header>{{ metricName }}</mat-card-header>
-    <mat-card-content class="card-content">
-      <input matInput [value]="metricValuePlaceholder" />
+    <mat-card-header>{{ metricName }} </mat-card-header>
+    <mat-card-content>
+      <div class="status-icon">
+        <input
+          matInput
+          [placeholder]="$any(metricValuePlaceholder)"
+          [(ngModel)]="value"
+        />
+        <mat-icon
+          *ngIf="showIcon"
+          [fontIcon]="iconName"
+          [color]="iconColor"
+        ></mat-icon>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

@@ -1,17 +1,19 @@
 .card-container {
-  padding: 0.2rem;
+  margin: 0.1rem;
+}
+input {
+  width: 40%;
+}
+mat-card-header {
+  font-size: small;
+  margin: 0.1rem;
+}
+mat-card-content {
   margin: 0.1rem;
 }
 
-.card-content {
+.status-icon {
   display: flex;
-  float:left
-}
-
-mat-card-header {
-  font-size: small;
-  padding: 0.25rem;
-}
-mat-card-content {
-  padding: 0.25rem;
+  justify-content: space-between;
+  flex-direction: row;
 }

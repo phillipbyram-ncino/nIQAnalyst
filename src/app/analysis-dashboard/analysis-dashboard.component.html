@@ -10,50 +10,37 @@
         <mat-card-header>
           <mat-card-title>
             {{ card.title }}
-            <!-- <button
-              mat-icon-button
-              class="more-button"
-              [matMenuTriggerFor]="menu"
-              aria-label="Toggle menu"
-            >
-              <mat-icon>more_vert</mat-icon>
-            </button> 
-             <mat-menu #menu="matMenu" xPosition="before">
-              <button mat-menu-item>Expand</button>
-              <button mat-menu-item>Remove</button>
-            </mat-menu> -->
           </mat-card-title>
         </mat-card-header>
-        <ng-container *ngIf="isPeriod(card) then periodCard; else decisionCard">
+        <ng-container
+          *ngIf="isPeriod(card); then periodCard; else decisionCard"
+        >
           <div>Card Content Here</div>
-          
         </ng-container>
+        <ng-template #periodCard>
+          <mat-card-content class="dashboard-card-content">
+            <div>
+              <app-metrics #metrics [period]="card"></app-metrics>
+            </div>
+          </mat-card-content>
+        </ng-template>
+        <ng-template #decisionCard>
+          <mat-card-content class="dashboard-card-content">
+            <div class="status-action-panel">
+              <span><ng-content></ng-content></span>
+            </div>
+          </mat-card-content>
+          <mat-divider></mat-divider>
+          <mat-card-actions class="decision-buttons">
+            <button mat-raised-button color="primary" (click)="makeCall()">Get Approvals</button>
+            <button mat-raised-button color="accent" (click)="findAtRisk()">Identify at risk</button>
+
+            <button mat-stroked-button (click)="addPeriod()">Create New Period</button>
+          </mat-card-actions>
+        </ng-template>
+        
       </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
 </div>
-<ng-template #periodCard>
-  <mat-card-content class="dashboard-card-content">
-    <div>
-      <app-metrics #metrics></app-metrics>
-    </div>
-  </mat-card-content>
-
-</ng-template>
-<ng-template #decisionCard>
-  <mat-card-content class="dashboard-card-content">
-    <div class="status-action-panel">
-      <button mat-stroked-button (click)="makeCall()">
-        Click to Make Call
-      </button>
-
-      <span><ng-content></ng-content></span>
-    </div>
-  </mat-card-content>
-  <mat-divider></mat-divider>
-  <mat-card-actions align="end">
-    <button mat-button (click)="addPeriod()">New Period</button>
-  </mat-card-actions>
-
-</ng-template>
 

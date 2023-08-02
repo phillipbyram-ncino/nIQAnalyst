@@ -1,21 +1,31 @@
 import { Injectable } from "@angular/core";
-import { ChatCompletionRequestMessage, Configuration, CreateChatCompletionRequest, CreateCompletionRequest, OpenAIApi } from "openai";
+import { ChatCompletionRequestMessage, ChatCompletionResponseMessage, Configuration, CreateChatCompletionRequest, CreateChatCompletionResponse, OpenAIApi } from "openai";
 import { BehaviorSubject, of } from "rxjs";
+import { Metric } from "./components/metric-card.component";
 
 
 export interface CallOptions {
     api_key?: string,
-    metrics: Map<string, number>
+    metrics: Map<string, Metric>
+    periodId: string
 }
+type ChatMessage =ChatCompletionResponseMessage | ChatCompletionRequestMessage | undefined
 @Injectable({ providedIn: "root" })
 export class AppService {
 
     static APPROVED: string = 'approved';
     static DENIED: string = 'denied';
+    static AT_RISK: string = 'At-Risk';
+    static NO_RISK: string = 'No Risk';
 
     static END_OF_CONTENT_WIGGLE_ROOM_LENGTH = 7;
 
     latestResponse$: BehaviorSubject<string> = new BehaviorSubject<string>('No response yet');
+
+    messages = new Array<ChatMessage>();
+
+    approvals = new Map<string, boolean>();
+
 
     openai: OpenAIApi | undefined;
     doSetup(key: string): OpenAIApi {
@@ -29,14 +39,16 @@ export class AppService {
         return this.openai;
     }
 
-    async makeCall(options: CallOptions): Promise<void> {
+    async makeCall(options: CallOptions): Promise<boolean> {
         options.api_key && this.doSetup(options.api_key);
         if (!this.openai) {
             throw Error('api not initialized');
         }
 
         try {
-            const completion = await this.openai.createChatCompletion(this.buildCCR(options.metrics));
+            const chatCompletionRequest = this.buildCCR(options.metrics);
+            const completion = await this.openai.createChatCompletion(chatCompletionRequest);
+            this.messages.push(...chatCompletionRequest.messages, completion.data.choices[0]?.message);
             const fullContent = completion.data.choices[0]?.message?.content || 'There was an error with the response';
             console.log(completion);
             console.log(fullContent);
@@ -44,36 +56,79 @@ export class AppService {
             const startPos = fullContent.length - AppService.END_OF_CONTENT_WIGGLE_ROOM_LENGTH - statusLength;
             const lastCharacters = fullContent.substring(startPos);
 
-            this.latestResponse$.next(lastCharacters.includes(AppService.APPROVED)? AppService.APPROVED: lastCharacters.includes(AppService.DENIED)? AppService.DENIED: 'ERROR');
-            return;
+            const response = lastCharacters.includes(AppService.APPROVED) ? AppService.APPROVED : lastCharacters.includes(AppService.DENIED) ? AppService.DENIED : 'ERROR';
+            this.latestResponse$.next(fullContent);
+            this.approvals.set(options.periodId, lastCharacters.includes(AppService.APPROVED))
+            return lastCharacters.includes(AppService.APPROVED);
 
         } catch (error) { }
         this.latestResponse$.next('hi');
+        this.approvals.set(options.periodId, false);
+        return false;
     }
 
-    buildCCR(metrics: Map<string, number>): CreateChatCompletionRequest {
-
-        let template = `
-
-        You are a financial analyst. I will be providing 7 key metrics. 
-        These key metrics will have a minimum or maximum benchmark. Here are the 7 key metrics:
-       
-        1. Debt Ratio: To meet the benchmark, the debt ratio should be equal to 3.0 or lower. If the debt ratio is less than or equal to 3.0, it meets this benchmark.
-
-        2. Inventory Turnover: To meet the benchmark, the inventory turnover ratio should be greater than or equal to 5.0 and less than or equal to 10.0. If the inventory turnover ratio falls within this range, it meets this benchmark.
-
-        3. Debt Service Coverage Ratio (DSCR): To meet the benchmark, DSCR should be equal to 1.25 or higher. If DSCR equals 1.25 or above, it meets this benchmark.
-
-        4. Loan-to-Value Ratio (LTV): To meet the benchmark, LTV should be equal to or less than 75. If LTV is equal to or less than 75, it meets this benchmark.
-
-        5. Current Ratio: To meet the benchmark, the current ratio should be equal to or greater than 1.2. If the current ratio is equal to or greater than 1.2, it meets this benchmark.
-
-        6. Profit Margin: To meet the benchmark, the profitability ratio should be equal to or greater than 1.5. If the profitability ratio is equal to or greater than 1.5, it meets this benchmark.
-
-        7. Fixed Charge Coverage Ratio: To meet the benchmark, the fixed charge coverage ratio should be equal to or greater than 1.25. If the fixed charge coverage ratio is equal to or greater than 1.25, it meets this benchmark.
+    async followUpOnMetric(metric: Metric): Promise<boolean> {
 
 
-        In each scenario, the User will provide the values for each of the 7 metrics above. 
+        const message1: ChatCompletionRequestMessage = {
+            role: 'user',
+            content: `is ${metric.metricName} ${AppService.AT_RISK} or ${AppService.NO_RISK}?`
+        }
+        this.messages.push(message1);
+        
+        if (!this.openai) {
+            throw Error('api not initialized');
+        }
+        console.log(this.messages)
+
+        const completion = await this.openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            temperature: 0.0,
+            messages: this.messages as Array<ChatCompletionRequestMessage>
+        });
+
+        this.messages.push(completion.data.choices[0]?.message);
+
+
+        const fullContent = completion.data.choices[0]?.message?.content || 'There was an error with the response';
+
+        console.log(fullContent);
+        return fullContent.includes(AppService.AT_RISK);
+
+
+    }
+    followUp(metrics: Array<Metric>) {
+
+        let metricsRangeInstructions = '';
+        metrics.forEach((metric, index) => {
+            metricsRangeInstructions +=
+                `${index + 1}. "${metric.metricName}":
+             a. “Lowest Value” = ${metric.min}
+             b. "Highest Value” = ${metric.max}`;
+        });
+
+        const message1: ChatCompletionRequestMessage = {
+            role: 'user',
+            content: `is `
+        }
+        this.messages.push(message1)
+        return {
+            model: "gpt-3.5-turbo",
+            temperature: 0.0,
+            messages: this.messages
+        }
+    }
+
+    private buildCCR(metrics: Map<string, Metric>): CreateChatCompletionRequest {
+
+        let old = `
+
+        You are a financial analyst trying to decide if a loan should be approved or not based on risk factors.
+        I will be providing 7 key metrics of a business for a period of time. 
+
+        Additionally I will provide a sliding scale from "Lowest Value" to "Highest Value" to measure each metric as "At-Risk" or "No Risk" for each metric.
+        
+        If the value for the metric is greater than or equal to its "Lowest Value", but less than or equal to its "Highest Value", provide me an "At-Risk" response.  If the value for one of the metrics does not fall within the sliding scale, provide me a "No Risk" response. 
 
         If all 7 of the metrics meet their benchmarks, I want you to provide an output of ${AppService.APPROVED} 
 
@@ -83,13 +138,30 @@ export class AppService {
 
         Each of the metric's values need to meet its respective benchmark with no margin of error. 
 
+        For now, just provide if this entire 
         `;
 
+        let template = `
+        
+            You are an analyst working at a financial institution creating a report for a business that is applying for a loan.
+            this report will indicate your advice on whether or not to approve the business for a loan.
+            You will be given a list of 7 ratios that should be used as risk factors. each ratio will have a value and a min/max threshhold. if the value falls inside of this threshhold the metric is considered low risk.
+
+        `
+
         let table = '';
-        Array.from(metrics.entries()).forEach(([name, value]) => {
-            table += `${name}: ${value}, `;
+        Array.from(metrics.entries()).forEach(([name,metric]) => {
+            table += `
+             ${name}: ${metric.value as string}
+             a. “Lowest Value” = ${metric.min}
+             b. "Highest Value” = ${metric.max}
+            `;
         });
-  
+
+        table += `
+        provide an anlaysis on the given financial data along with an approve or deny rating:`
+
+        console.log(table);
         const message0: ChatCompletionRequestMessage = {
             role: 'system',
             content: template
@@ -99,12 +171,12 @@ export class AppService {
             content: table
         }
 
-        const messages:Array<ChatCompletionRequestMessage> = [message0, message1];
+        const messages: Array<ChatCompletionRequestMessage> = [message0, message1];
         // console.log(messages);
         return {
             model: "gpt-3.5-turbo",
             temperature: 0.0,
-            messages:messages
+            messages: messages
         }
     }
 

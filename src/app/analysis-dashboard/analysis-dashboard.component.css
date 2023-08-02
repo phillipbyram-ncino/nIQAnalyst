@@ -4,11 +4,11 @@
 
 .dashboard-card {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
-  display:flex;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  display: flex;
   flex-direction: column;
 }
 
@@ -22,4 +22,12 @@
   text-align: center;
   flex-grow: 1;
   overflow: auto;
+}
+
+.decision-buttons {
+  margin: 0.1rem;
+}
+
+.decision-buttons button{
+  margin: 0.1rem;
 }
