@@ -38,24 +38,24 @@ export class MetricsFormulaService {
     }
     isPeriodFailure(metricList?: Array<Metric>, approvalOptions?: ApprovalOptions, numFailures?: number): boolean {
         if (!metricList) {
-            return (numFailures || 0) > (approvalOptions?.allowableFailedMetrics || -1)
+            return (numFailures || 0) >= (approvalOptions?.allowableFailedMetrics || -1)
         }
 
         const successfulMetrics = metricList.filter((m) => this.isMetricSuccessful(m));
 
-        return (metricList.length - successfulMetrics.length) > (approvalOptions?.allowableFailedMetrics || 0);
+        return (metricList.length - successfulMetrics.length) >= (approvalOptions?.allowableFailedMetrics || 0);
     }
 
 
     isApplicationFailure(periodList?: Array<Array<Metric>>, approvalOptions?: ApprovalOptions, numFailures?: number, numPeriods?: number): boolean {
         const options: ApprovalOptions = this.extrapolateOptions(periodList?.length || numPeriods || 0, approvalOptions);
         if(!periodList){
-            return (numFailures || 0) > (options.allowableFailedPeriods || -1)
+            return (numFailures || 0) >= (options.allowableFailedPeriods || -1)
         }
 
         const failedPeriods = periodList.filter((m) => this.isPeriodFailure(m, options));
 
-        return failedPeriods.length > (options?.allowableFailedPeriods || 0);
+        return failedPeriods.length >= (options?.allowableFailedPeriods || 0);
     }
 
     getAllowableRiskyPeriods(numPeriods: number, approvalOptions: ApprovalOptions): number {
