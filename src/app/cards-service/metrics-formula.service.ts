@@ -35,13 +35,16 @@ export class MetricsFormulaService {
         }
 
     }
-
-    isPeriodFailure(metricList: Array<Metric>, approvalOptions?: ApprovalOptions): boolean {
+    isPeriodFailure(metricList?: Array<Metric>, approvalOptions?: ApprovalOptions, numFailures?: number): boolean {
+        if (!metricList) {
+            return (numFailures || 0) > (approvalOptions?.allowableFailedMetrics || -1)
+        }
 
         const successfulMetrics = metricList.filter((m) => this.isMetricSuccessful(m));
 
         return (metricList.length - successfulMetrics.length) > (approvalOptions?.allowableFailedMetrics || 0);
     }
+
 
     isApplicationFailure(periodList: Array<Array<Metric>>, approvalOptions?: ApprovalOptions): boolean {
 

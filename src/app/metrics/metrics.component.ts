@@ -1,7 +1,8 @@
-import { Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
 import { Metric, MetricCardComponent } from '../components/metric-card.component';
 import { AppService, CallOptions } from '../app.service';
 import { PeriodCard } from '../cards-service/period-card';
+import { ApprovalOptions, MetricsFormulaService } from '../cards-service/metrics-formula.service';
 
 @Component({
   selector: 'app-metrics',
@@ -10,9 +11,15 @@ import { PeriodCard } from '../cards-service/period-card';
 })
 export class MetricsComponent {
 
-  constructor(private readonly service: AppService) { }
+  constructor(private readonly service: AppService,private readonly metricsService: MetricsFormulaService) { }
 
   @Input() period?: PeriodCard;
+  @Input() approvalOptions?: ApprovalOptions;
+
+  showIcon: boolean = false;
+  iconName: string = '';
+  iconColor: string = 'primary';
+  isSuccessful: boolean = false;
 
   @ViewChildren('metric')
   metricsComponents?: QueryList<MetricCardComponent>;
@@ -31,6 +38,15 @@ export class MetricsComponent {
   }
 
 
+  private handleEval(success: boolean) {
+    this.iconName = success ? 'checkmark' : 'error';
+    this.iconColor = success ? 'primary' : 'accent';
+
+    this.isSuccessful = success;
+    this.showIcon = true;
+  }
+
+
   private updateMetricsMap(): void {
     this.metricsComponents?.forEach((metric) => {
       this.metrics.set(metric.metricName, metric);
@@ -41,7 +57,12 @@ export class MetricsComponent {
 
     this.updateMetricsMap();
 
-    this.metricsComponents?.forEach(metricComponent => metricComponent.testThresholds())
+    const successes = this.metricsComponents?.map(metricComponent => metricComponent.checkSuccess()) || [];
+
+    const numfailures = successes.filter(success => !success).length
+
+
+    this.handleEval(!this.metricsService.isPeriodFailure(undefined,this.approvalOptions,numfailures));
    }
 
 }

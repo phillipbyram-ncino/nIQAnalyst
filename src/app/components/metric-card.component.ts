@@ -44,7 +44,7 @@ export class MetricCardComponent implements AfterViewInit, Metric {
 
     }
 
-    testThresholds() {
+    checkSuccess():boolean {
         if(!this.value){
             this.value = this.metricValuePlaceholder
         }
@@ -53,6 +53,7 @@ export class MetricCardComponent implements AfterViewInit, Metric {
         !successful && this.setIcon(!successful);
     
         this.setIcon(successful, this.metricsService.isMetricLowRisk(this));
+        return successful;
     }
     setIcon(success:boolean, atRisk?:boolean){
 

@@ -1,5 +1,22 @@
 .metric-cards {
-    display: flex;
-    flex-direction:row;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.card-title {
+  display: flex;
+  text-align: center;
+  flex-grow: 1;
+  overflow: auto;
+}
+.status-icon {
+  position: absolute;
+  right: 1rem;
+}
+
+.dashboard-card-content {
+  text-align: center;
+  flex-grow: 1;
+  overflow: auto;
 }

@@ -7,6 +7,7 @@ import { MetricCardComponent } from '../components/metric-card.component';
 import { PeriodCard } from '../cards-service/period-card';
 import { AppService } from '../app.service';
 import { MetricsComponent } from '../metrics/metrics.component';
+import { ApprovalOptions } from '../cards-service/metrics-formula.service';
 
 @Component({
   selector: 'app-analysis-dashboard',
@@ -16,11 +17,27 @@ import { MetricsComponent } from '../metrics/metrics.component';
 })
 export class AnalysisDashboardComponent {
 
-  constructor(private cardsService: CardsService, private appService:AppService) {
+  constructor(private cardsService: CardsService, private appService: AppService) {
   }
   private breakpointObserver = inject(BreakpointObserver);
   private addPeriodEvent = new EventEmitter<Array<Card>>()
   @Output() submitCall = new EventEmitter<void>()
+
+  showIcon: boolean = false;
+  iconName: string = '';
+  iconColor: string = 'primary';
+  isSuccessful: boolean = false;
+  approvalOptions: ApprovalOptions = {
+    allowableFailedMetrics: 1
+  }
+
+  handleEval(success: boolean) {
+    this.iconName = success ? 'checkmark' : 'error';
+    this.iconColor = success ? 'primary' : 'accent';
+
+    this.isSuccessful = success;
+    this.showIcon = true;
+  }
 
   @ViewChildren('metrics')
   metricsComponents?: QueryList<MetricsComponent>;
@@ -37,7 +54,7 @@ export class AnalysisDashboardComponent {
       })),
     this.addPeriodEvent
   )
-  isPeriod(card: Card):card is PeriodCard {
+  isPeriod(card: Card): card is PeriodCard {
     const v = (card as PeriodCard).isPeriod;
 
     return v || false
@@ -51,12 +68,12 @@ export class AnalysisDashboardComponent {
     this.addPeriodEvent.next(this.cardsService.getCards());
 
   }
-  async makeCall():Promise<void>{
+  async makeCall(): Promise<void> {
     await Promise.all([this.metricsComponents?.map(component => component.makeCall())]);
     this.submitCall.next();
   }
 
-  async findAtRisk(): Promise<void>{
-    await Promise.all( [this.metricsComponents?.map(component => component.findAtRisk())])
+  async findAtRisk(): Promise<void> {
+    await Promise.all([this.metricsComponents?.map(component => component.findAtRisk())])
   }
 }

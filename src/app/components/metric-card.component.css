@@ -1,5 +1,6 @@
 .card-container {
   margin: 0.1rem;
+  float:left
 }
 input {
   width: 40%;

@@ -7,24 +7,27 @@
       [rowspan]="card.rows"
     >
       <mat-card class="dashboard-card">
-        <mat-card-header>
-          <mat-card-title>
-            {{ card.title }}
-          </mat-card-title>
-        </mat-card-header>
         <ng-container
           *ngIf="isPeriod(card); then periodCard; else decisionCard"
         >
           <div>Card Content Here</div>
         </ng-container>
         <ng-template #periodCard>
-          <mat-card-content class="dashboard-card-content">
-            <div>
-              <app-metrics #metrics [period]="card"></app-metrics>
-            </div>
-          </mat-card-content>
+          <app-metrics #metrics [period]="card" [approvalOptions]="approvalOptions"></app-metrics>
         </ng-template>
         <ng-template #decisionCard>
+          <mat-card-header>
+            <mat-card-title class="card-title">
+              {{ card.title }}
+              <div class="status-icon">
+                <mat-icon
+                  *ngIf="showIcon"
+                  [fontIcon]="iconName"
+                  [color]="iconColor"
+                ></mat-icon>
+              </div>
+            </mat-card-title>
+          </mat-card-header>
           <mat-card-content class="dashboard-card-content">
             <div class="status-action-panel">
               <span><ng-content></ng-content></span>
@@ -32,15 +35,19 @@
           </mat-card-content>
           <mat-divider></mat-divider>
           <mat-card-actions class="decision-buttons">
-            <button mat-raised-button color="primary" (click)="makeCall()">Get Approvals</button>
-            <button mat-raised-button color="accent" (click)="findAtRisk()">Identify at risk</button>
+            <button mat-raised-button color="primary" (click)="makeCall()">
+              Get Approvals
+            </button>
+            <button mat-raised-button color="accent" (click)="findAtRisk()">
+              Identify at risk
+            </button>
 
-            <button mat-stroked-button (click)="addPeriod()">Create New Period</button>
+            <button mat-stroked-button (click)="addPeriod()">
+              Create New Period
+            </button>
           </mat-card-actions>
         </ng-template>
-        
       </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
 </div>
-
