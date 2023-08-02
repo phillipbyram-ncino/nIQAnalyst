@@ -2,13 +2,18 @@ import { Component, EventEmitter, Output, QueryList, ViewChildren, inject } from
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { Card, CardsService } from '../cards-service/cards.service';
-import { concat, from, fromEvent, merge } from 'rxjs';
+import { BehaviorSubject, concat, from, fromEvent, merge } from 'rxjs';
 import { MetricCardComponent } from '../components/metric-card.component';
 import { PeriodCard } from '../cards-service/period-card';
 import { AppService } from '../app.service';
 import { MetricsComponent } from '../metrics/metrics.component';
 import { ApprovalOptions, MetricsFormulaService } from '../cards-service/metrics-formula.service';
 
+
+export interface FinancialApplication {
+  isPassed?: boolean;
+  periods: Array<PeriodCard>;
+}
 @Component({
   selector: 'app-analysis-dashboard',
   templateUrl: './analysis-dashboard.component.html',
@@ -32,7 +37,9 @@ export class AnalysisDashboardComponent {
     allowableFailedPeriodsRatio: 0.5
   }
 
-  handleEval(success: boolean):boolean {
+
+
+  handleEval(success: boolean): boolean {
     this.iconName = success ? 'checkmark' : 'error';
     this.iconColor = success ? 'primary' : 'accent';
 
@@ -45,7 +52,7 @@ export class AnalysisDashboardComponent {
   metricsComponents?: QueryList<MetricsComponent>;
 
   /** Based on the screen size, switch from standard to one column per row */
-  cards = merge(
+  cards: BehaviorSubject<Array<Card>> = merge(
     this.breakpointObserver.observe(Breakpoints.Handset).pipe(
       map(({ matches }) => {
         if (matches) {
@@ -55,7 +62,7 @@ export class AnalysisDashboardComponent {
         return this.cardsService.getCards();
       })),
     this.addPeriodEvent
-  )
+  ) as BehaviorSubject<Array<Card>>
   isPeriod(card: Card): card is PeriodCard {
     const v = (card as PeriodCard).isPeriod;
 
@@ -76,8 +83,18 @@ export class AnalysisDashboardComponent {
   }
 
   findAtRisk(): void {
+
     const failedPeriods = this.metricsComponents?.map(component => component.findAtRisk()) || [];
 
-    this.handleEval(this.metricsService.isApplicationFailure(undefined,this.approvalOptions,failedPeriods.filter(f => !!f).length, this.cardsService.getPeriodCardsLength()));
+    const applicationResult = this.handleEval(this.metricsService.isApplicationFailure(undefined, this.approvalOptions, failedPeriods.filter(f => !!f).length, this.cardsService.getPeriodCardsLength()));
+
+
+    const cards: Array<PeriodCard> = this.metricsComponents?.map((c: PeriodCard) => ({ ...c })) || []
+    const application: FinancialApplication = {
+      isPassed: applicationResult,
+      periods: cards
+
+    }
+    console.log(application)
   }
 }

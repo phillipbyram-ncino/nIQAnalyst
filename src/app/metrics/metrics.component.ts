@@ -9,11 +9,16 @@ import { ApprovalOptions, MetricsFormulaService } from '../cards-service/metrics
   templateUrl: './metrics.component.html',
   styleUrls: ['./metrics.component.css']
 })
-export class MetricsComponent {
+export class MetricsComponent implements PeriodCard{
 
   constructor(private readonly service: AppService,private readonly metricsService: MetricsFormulaService) { }
 
+
   @Input() period?: PeriodCard;
+  title: string = this.period?.title || '';
+  cols: number= this.period?.cols || 1;;
+  rows: number = this.period?.rows || 1;
+  isPeriod?: boolean | undefined;
   @Input() approvalOptions?: ApprovalOptions;
 
   showIcon: boolean = false;

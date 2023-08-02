@@ -32,6 +32,9 @@ export class MetricCardComponent implements AfterViewInit, Metric {
     @Input() metricBounds: 'upper' | 'lower' | 'both' | 'neither' = 'neither';
     @Input() boundsMargin: number = 0;
 
+    isAtRisk?:boolean;
+    isSuccessful?:boolean;
+
     value?: number;
 
 
@@ -52,6 +55,9 @@ export class MetricCardComponent implements AfterViewInit, Metric {
         const successful = this.metricsService.isMetricSuccessful(this);
         const isHighRisk = !this.metricsService.isMetricLowRisk(this);
         this.setIcon([successful,isHighRisk])
+
+        this.isAtRisk = isHighRisk;
+        this.isSuccessful = successful;
     
         return successful;
     }
