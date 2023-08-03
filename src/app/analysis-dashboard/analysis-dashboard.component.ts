@@ -29,6 +29,7 @@ export class AnalysisDashboardComponent {
   @Output() submitCall = new EventEmitter<void>()
 
   isApprovalChecked =false; 
+  isWorking = false;
 
   showIcon: boolean = false;
   iconName: string = '';
@@ -80,7 +81,9 @@ export class AnalysisDashboardComponent {
 
   }
   async makeCall(): Promise<void> {
+    this.isWorking = true;
     this.application && await this.appService.sendApplication(this.application);
+    this.isWorking = false;
   }
 
   async findAtRisk(): Promise<void> {

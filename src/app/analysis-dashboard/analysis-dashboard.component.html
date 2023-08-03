@@ -34,6 +34,9 @@
             </div>
           </mat-card-content>
           <mat-divider></mat-divider>
+          <section *ngIf="isWorking">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          </section>
           <mat-card-actions class="decision-buttons">
             <button mat-stroked-button (click)="addPeriod()">
               Create New Period
@@ -41,7 +44,7 @@
             <button mat-raised-button color="accent" (click)="findAtRisk()">
               Submit for Approval
             </button>
-            <button mat-raised-button color="primary" (click)="makeCall()" [disabled]="!isApprovalChecked">
+            <button mat-raised-button color="primary" (click)="makeCall()" [disabled]="!isApprovalChecked || isWorking">
               Get Analysis
             </button>
           </mat-card-actions>
