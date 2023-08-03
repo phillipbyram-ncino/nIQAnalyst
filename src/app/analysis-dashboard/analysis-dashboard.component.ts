@@ -30,6 +30,7 @@ export class AnalysisDashboardComponent {
 
   isApprovalChecked =false; 
   isWorking = false;
+  hasAnalysis = false;
 
   showIcon: boolean = false;
   iconName: string = '';
@@ -73,6 +74,10 @@ export class AnalysisDashboardComponent {
     return p || false
   }
 
+  showQuestions(){
+
+  }
+
 
   addPeriod() {
     const newNumPeriodCards = this.cardsService.getPeriodCardsLength() + 1;
@@ -84,9 +89,11 @@ export class AnalysisDashboardComponent {
     this.isWorking = true;
     this.application && await this.appService.sendApplication(this.application);
     this.isWorking = false;
+    this.hasAnalysis = true;
   }
 
   async findAtRisk(): Promise<void> {
+    
 
     const failedPeriods = this.metricsComponents?.map(component => component.findAtRisk()) || [];
 
@@ -100,6 +107,7 @@ export class AnalysisDashboardComponent {
 
     }
     this.application = application;
+    this.hasAnalysis = false;
     
     this.isApprovalChecked = true;
   }

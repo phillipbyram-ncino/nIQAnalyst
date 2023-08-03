@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ChatCompletionRequestMessage, ChatCompletionResponseMessage, Configuration, CreateChatCompletionRequest, CreateChatCompletionResponse, OpenAIApi } from "openai";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, takeLast } from "rxjs";
 import { Metric, MetricCardComponent } from "./components/metric-card.component";
 import { FinancialApplication } from "./analysis-dashboard/analysis-dashboard.component";
 import { PeriodCard } from "./cards-service/period-card";

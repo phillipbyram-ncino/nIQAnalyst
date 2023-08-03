@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AppService, CallOptions } from './app.service';
 import { MetricCardComponent } from './components/metric-card.component';
+import { takeLast } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit {
   title = 'nIQAnalyst';
   api_key: string = '';
   responses: Array<string> = [];
+  lastResponse: string = ''
   viewReady = false;
 
   private test = `
@@ -33,8 +35,13 @@ Vestibulum sit
     this.service.doSetup(this.api_key);
 
     this.service.latestResponse$.subscribe(
-      (response) => this.responses.push(response));
+      (response) => {
+        this.responses.push(response)
+        this.lastResponse = response;
+      }
+    );
 
-      // this.responses.push(this.test)
+
+    // this.responses.push(this.test)
   }
 }

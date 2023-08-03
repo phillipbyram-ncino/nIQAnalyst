@@ -29,9 +29,17 @@
             </mat-card-title>
           </mat-card-header>
           <mat-card-content class="dashboard-card-content">
-            <div class="status-action-panel">
-              <span><ng-content></ng-content></span>
-            </div>
+            <ng-container *ngIf="!hasAnalysis; then statusIcon; else analysisContent "></ng-container>
+            <ng-template #analysisContent>
+              <div class="status-action-panel">
+                <span><ng-content></ng-content></span>
+              </div>
+            </ng-template>
+            <ng-template #statusIcon>
+              <div>
+                <mat-icon fontIcon="check_circle_outline"></mat-icon>
+              </div>
+            </ng-template>
           </mat-card-content>
           <mat-divider></mat-divider>
           <section *ngIf="isWorking">
@@ -41,12 +49,15 @@
             <button mat-stroked-button (click)="addPeriod()">
               Create New Period
             </button>
+            <button mat-raised-button color="primary" (click)="makeCall()" [disabled]="!isApprovalChecked || isWorking" *ngIf="!hasAnalysis">
+              Get Analysis
+            </button>
             <button mat-raised-button color="accent" (click)="findAtRisk()">
               Submit for Approval
             </button>
-            <button mat-raised-button color="primary" (click)="makeCall()" [disabled]="!isApprovalChecked || isWorking">
-              Get Analysis
-            </button>
+            <!-- <button mat-raised-button color="primary" (click)="showQuestions()" *ngIf="hasAnalysis">
+              Customer Follow Ups
+            </button> -->
           </mat-card-actions>
         </ng-template>
       </mat-card>
