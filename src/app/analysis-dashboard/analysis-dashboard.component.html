@@ -35,15 +35,14 @@
           </mat-card-content>
           <mat-divider></mat-divider>
           <mat-card-actions class="decision-buttons">
+            <button mat-stroked-button (click)="addPeriod()">
+              Create New Period
+            </button>
             <button mat-raised-button color="accent" (click)="findAtRisk()">
               Submit for Approval
             </button>
             <button mat-raised-button color="primary" (click)="makeCall()" [disabled]="!isApprovalChecked">
               Get Analysis
-            </button>
-
-            <button mat-stroked-button (click)="addPeriod()">
-              Create New Period
             </button>
           </mat-card-actions>
         </ng-template>

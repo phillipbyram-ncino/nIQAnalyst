@@ -38,6 +38,7 @@ export class AnalysisDashboardComponent {
     allowableFailedMetrics: 2,
     allowableFailedPeriodsRatio: 0.5
   }
+  application?: FinancialApplication;
 
 
 
@@ -66,22 +67,20 @@ export class AnalysisDashboardComponent {
     this.addPeriodEvent
   ) as BehaviorSubject<Array<Card>>
   isPeriod(card: Card): card is PeriodCard {
-    const v = (card as PeriodCard).isPeriod;
+    const p = (card as PeriodCard).isPeriod;
 
-    return v || false
+    return p || false
   }
 
 
   addPeriod() {
     const newNumPeriodCards = this.cardsService.getPeriodCardsLength() + 1;
     this.cardsService.addPeriod(`Period ${newNumPeriodCards}`);
-    console.log('did thing')
     this.addPeriodEvent.next(this.cardsService.getCards());
 
   }
   async makeCall(): Promise<void> {
-    await Promise.all([this.metricsComponents?.map(component => component.makeCall())]);
-    this.submitCall.next();
+    this.application && await this.appService.sendApplication(this.application);
   }
 
   async findAtRisk(): Promise<void> {
@@ -97,8 +96,7 @@ export class AnalysisDashboardComponent {
       periods: cards
 
     }
-    console.log(application)
-    await this.appService.sendApplication(application);
+    this.application = application;
     
     this.isApprovalChecked = true;
   }
