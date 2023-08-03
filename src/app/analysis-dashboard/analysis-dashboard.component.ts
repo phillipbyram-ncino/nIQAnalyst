@@ -35,6 +35,8 @@ export class AnalysisDashboardComponent {
   showIcon: boolean = false;
   iconName: string = '';
   iconColor: string = 'primary';
+  badgeName: string = 'remove_circle_outline';
+  badgeColor: string = '';
   isSuccessful: boolean = false;
   approvalOptions: ApprovalOptions = {
     allowableFailedMetrics: 2,
@@ -47,6 +49,8 @@ export class AnalysisDashboardComponent {
   handleEval(success: boolean): boolean {
     this.iconName = success ? 'checkmark' : 'error';
     this.iconColor = success ? 'primary' : 'accent';
+    this.badgeName = success ? 'check_circle_outline' : 'error';
+    this.badgeColor = success ? 'primary' : 'accent';
 
     this.isSuccessful = success;
     this.showIcon = true;

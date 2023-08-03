@@ -36,8 +36,8 @@
               </div>
             </ng-template>
             <ng-template #statusIcon>
-              <div>
-                <mat-icon fontIcon="check_circle_outline"></mat-icon>
+              <div class="badge-container">
+                <mat-icon [fontIcon]="badgeName" class="badge" [color]="badgeColor"></mat-icon>
               </div>
             </ng-template>
           </mat-card-content>
