@@ -7,7 +7,7 @@ import { ApprovalOptions, MetricsFormulaService } from '../cards-service/metrics
 @Component({
   selector: 'app-metrics',
   templateUrl: './metrics.component.html',
-  styleUrls: ['./metrics.component.css']
+  styleUrls: ['./metrics.component.scss']
 })
 export class MetricsComponent{
 

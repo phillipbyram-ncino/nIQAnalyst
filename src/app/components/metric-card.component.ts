@@ -15,7 +15,7 @@ export interface Metric {
 @Component({
     templateUrl: './metric-card.component.html',
     selector: 'app-metric-card',
-    styleUrls: ['./metric-card.component.css']
+    styleUrls: ['./metric-card.component.scss']
 })
 export class MetricCardComponent implements AfterViewInit, Metric {
 

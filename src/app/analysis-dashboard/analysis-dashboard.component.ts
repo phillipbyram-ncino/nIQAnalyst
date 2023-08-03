@@ -17,7 +17,7 @@ export interface FinancialApplication {
 @Component({
   selector: 'app-analysis-dashboard',
   templateUrl: './analysis-dashboard.component.html',
-  styleUrls: ['./analysis-dashboard.component.css'],
+  styleUrls: ['./analysis-dashboard.component.scss'],
   providers: [CardsService]
 })
 export class AnalysisDashboardComponent {
