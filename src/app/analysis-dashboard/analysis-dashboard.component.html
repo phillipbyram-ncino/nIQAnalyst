@@ -1,6 +1,6 @@
 <div class="grid-container">
-  <h1 class="mat-h1">nIQAnalyst Pro Max +</h1>
-  <mat-grid-list cols="3" rowHeight="400px">
+  <img src="assets/niq.png" class="logo" />
+  <mat-grid-list cols="3" rowHeight="25rem">
     <mat-grid-tile
       *ngFor="let card of cards | async"
       [colspan]="card.cols"
@@ -13,7 +13,11 @@
           <div>Card Content Here</div>
         </ng-container>
         <ng-template #periodCard>
-          <app-metrics #metrics [period]="card" [approvalOptions]="approvalOptions"></app-metrics>
+          <app-metrics
+            #metrics
+            [period]="card"
+            [approvalOptions]="approvalOptions"
+          ></app-metrics>
         </ng-template>
         <ng-template #decisionCard>
           <mat-card-header>
@@ -29,7 +33,9 @@
             </mat-card-title>
           </mat-card-header>
           <mat-card-content class="dashboard-card-content">
-            <ng-container *ngIf="!hasAnalysis; then statusIcon; else analysisContent "></ng-container>
+            <ng-container
+              *ngIf="!hasAnalysis; then statusIcon; else analysisContent"
+            ></ng-container>
             <ng-template #analysisContent>
               <div class="status-action-panel">
                 <span><ng-content></ng-content></span>
@@ -37,7 +43,11 @@
             </ng-template>
             <ng-template #statusIcon>
               <div class="badge-container">
-                <mat-icon [fontIcon]="badgeName" class="badge" [color]="badgeColor"></mat-icon>
+                <mat-icon
+                  [fontIcon]="badgeName"
+                  class="badge"
+                  [color]="badgeColor"
+                ></mat-icon>
               </div>
             </ng-template>
           </mat-card-content>
@@ -49,7 +59,13 @@
             <button mat-stroked-button (click)="addPeriod()">
               Create New Period
             </button>
-            <button mat-raised-button color="primary" (click)="makeCall()" [disabled]="!isApprovalChecked || isWorking" *ngIf="!hasAnalysis">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="makeCall()"
+              [disabled]="!isApprovalChecked || isWorking"
+              *ngIf="!hasAnalysis"
+            >
               Get Analysis
             </button>
             <button mat-raised-button color="accent" (click)="findAtRisk()">
