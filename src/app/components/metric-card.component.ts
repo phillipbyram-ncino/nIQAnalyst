@@ -10,6 +10,7 @@ export interface Metric {
     max: number
     metricBounds: 'upper' | 'lower' | 'both' | 'neither'
     boundsMargin: number
+    result?: 'no-risk' | 'at-risk' | 'fail'
 }
 @Component({
     templateUrl: './metric-card.component.html',
@@ -34,6 +35,7 @@ export class MetricCardComponent implements AfterViewInit, Metric {
 
     isAtRisk?:boolean;
     isSuccessful?:boolean;
+    result?: 'no-risk' | 'at-risk' | 'fail';
 
     value?: number;
 
@@ -58,6 +60,7 @@ export class MetricCardComponent implements AfterViewInit, Metric {
 
         this.isAtRisk = isHighRisk;
         this.isSuccessful = successful;
+        this.result = !successful? 'fail':isHighRisk? 'at-risk':'no-risk';
     
         return successful;
     }

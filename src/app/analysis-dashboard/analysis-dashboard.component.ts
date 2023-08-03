@@ -28,6 +28,8 @@ export class AnalysisDashboardComponent {
   private addPeriodEvent = new EventEmitter<Array<Card>>()
   @Output() submitCall = new EventEmitter<void>()
 
+  isApprovalChecked =false; 
+
   showIcon: boolean = false;
   iconName: string = '';
   iconColor: string = 'primary';
@@ -82,19 +84,22 @@ export class AnalysisDashboardComponent {
     this.submitCall.next();
   }
 
-  findAtRisk(): void {
+  async findAtRisk(): Promise<void> {
 
     const failedPeriods = this.metricsComponents?.map(component => component.findAtRisk()) || [];
 
     const applicationResult = this.handleEval(this.metricsService.isApplicationFailure(undefined, this.approvalOptions, failedPeriods.filter(f => !!f).length, this.cardsService.getPeriodCardsLength()));
 
 
-    const cards: Array<PeriodCard> = this.metricsComponents?.map((c: PeriodCard) => ({ ...c })) || []
+    const cards: Array<PeriodCard> = this.metricsComponents?.filter(p => !!p.period).map((c) => ({ ...c.period })) as Array<PeriodCard>
     const application: FinancialApplication = {
       isPassed: applicationResult,
       periods: cards
 
     }
     console.log(application)
+    await this.appService.sendApplication(application);
+    
+    this.isApprovalChecked = true;
   }
 }

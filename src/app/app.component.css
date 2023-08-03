@@ -7,3 +7,9 @@
     display: flex;
     flex-direction: column;
 }
+
+.response{
+    white-space: pre-line;
+    text-align: left;
+    float: left;
+}
