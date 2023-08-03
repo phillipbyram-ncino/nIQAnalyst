@@ -68,7 +68,7 @@ export class MetricCardComponent implements AfterViewInit, Metric {
         console.log([success,atRisk]);
 
         this.iconName = atRisk? 'error':'checkmark';
-        this.iconColor = success? 'primary': 'accent';
+        this.iconColor = success? atRisk?'warn':'primary': 'accent';
 
         this.showIcon = true;
     }
