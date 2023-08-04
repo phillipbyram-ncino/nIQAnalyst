@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Metric } from "../components/metric-card.component";
+import { Metric } from "../metric-card/metric-card.component";
 
 export enum Risk {
     'At-Risk', 'No-Risk'
@@ -23,7 +23,6 @@ export class MetricsFormulaService {
         return metric.min <= metric.value && metric.value <= metric.max
     }
     isMetricLowRisk(metric: Metric): boolean {
-        // console.log(metric)
         switch (metric.metricBounds) {
             case "upper":
                 return metric.value <= (metric.max - metric.boundsMargin);

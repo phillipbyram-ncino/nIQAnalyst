@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output, QueryList, ViewChildren } from '@angular/core';
-import { Metric, MetricCardComponent } from '../components/metric-card.component';
-import { AppService, CallOptions } from '../app.service';
+import { Component, Input, QueryList, ViewChildren } from '@angular/core';
+import { Metric, MetricCardComponent } from '../metric-card/metric-card.component';
 import { PeriodCard } from '../cards-service/period-card';
 import { ApprovalOptions, MetricsFormulaService } from '../cards-service/metrics-formula.service';
 
@@ -11,55 +10,19 @@ import { ApprovalOptions, MetricsFormulaService } from '../cards-service/metrics
 })
 export class MetricsComponent{
 
-  constructor(private readonly service: AppService,private readonly metricsService: MetricsFormulaService) { }
+  constructor(private readonly metricsService: MetricsFormulaService) { }
 
+  @ViewChildren('metric')
+  metricsComponents?: QueryList<MetricCardComponent>;
 
   @Input() period?: PeriodCard;
-  isPeriod?: boolean;
   @Input() approvalOptions?: ApprovalOptions;
 
   showIcon: boolean = false;
   iconName: string = '';
   iconColor: string = 'primary';
-  isSuccessful: boolean = false;
 
-  @ViewChildren('metric')
-  metricsComponents?: QueryList<MetricCardComponent>;
-
-  metrics: Map<string, Metric> = new Map<string, Metric>();
-
-  async makeCall(): Promise<void> {
-
-    this.updateMetricsMap();
-    const options: CallOptions = {
-      metrics: this.metrics,
-      periodId: this.period?.title || ''
-    }
-    await this.service.makeCall(options);
-
-  }
-
-
-  private handleEval(success: boolean):boolean {
-    this.iconName = success ? 'checkmark' : 'error';
-    this.iconColor = success ? 'primary' : 'accent';
-
-    this.isSuccessful = success;
-    this.period = {
-      ...this.period,
-      metrics:this.metrics,
-      isSuccessful: success
-    } as PeriodCard
-    this.showIcon = true;
-    return success;
-  }
-
-
-  private updateMetricsMap(): void {
-    this.metricsComponents?.forEach((metric) => {
-      this.metrics.set(metric.metricName, metric);
-    })
-  }
+  private metrics: Map<string, Metric> = new Map<string, Metric>();
 
   findAtRisk(): boolean {
 
@@ -69,8 +32,26 @@ export class MetricsComponent{
 
     const numfailures = successes.filter(success => !success).length
 
-
     return this.handleEval(!this.metricsService.isPeriodFailure(undefined,this.approvalOptions,numfailures));
    }
 
+  // TODO setIcon should be in an interface or Metric/Period/Dashboard interfaces should implement a new `Failable` interface
+  private handleEval(success: boolean):boolean {
+    this.iconName = success ? 'checkmark' : 'error';
+    this.iconColor = success ? 'primary' : 'accent';
+
+    this.period = {
+      ...this.period,
+      metrics:this.metrics,
+      isSuccessful: success
+    } as PeriodCard
+    this.showIcon = true;
+    return success;
+  }
+
+  private updateMetricsMap(): void {
+    this.metricsComponents?.forEach((metric) => {
+      this.metrics.set(metric.metricName, metric);
+    })
+  }
 }

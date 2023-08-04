@@ -1,4 +1,4 @@
-import { Metric } from "../components/metric-card.component";
+import { Metric } from "../metric-card/metric-card.component";
 import { Card } from "./cards.service";
 
 export class PeriodCard implements Card {

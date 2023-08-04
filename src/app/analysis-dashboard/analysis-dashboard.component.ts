@@ -2,8 +2,7 @@ import { Component, EventEmitter, Output, QueryList, ViewChildren, inject } from
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { Card, CardsService } from '../cards-service/cards.service';
-import { BehaviorSubject, concat, from, fromEvent, merge } from 'rxjs';
-import { MetricCardComponent } from '../components/metric-card.component';
+import { BehaviorSubject, merge } from 'rxjs';
 import { PeriodCard } from '../cards-service/period-card';
 import { AppService } from '../app.service';
 import { MetricsComponent } from '../metrics/metrics.component';
